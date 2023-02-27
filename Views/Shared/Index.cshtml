@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+
+    <form action="https://localhost:7122/Chatbot" method="post" name="myForm" id="register_form">
+        @*@Html.AntiForgeryToken()*@
+        <div>
+            <label for="say">message</label>
+            <input name="message" id="message" value="Helloo" />
+            <input type="hidden" id="__RequestVerificationToken" name="__RequestVerificationToken" value="test" />
+
+            <input id="postSubmit" type="submit" value="Send Me!">
+        </div>
+    </form>
+
+</body>
+</html>
+
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+<script>
+
+    document.getElementById("__RequestVerificationToken").value = (document.cookie).split('=')[1];
+
+    @* document.getElementById("__RequestVerificationToken").value = "__RequestVerificationToken" *@
+
+    @* console.log( document.getElementById("__RequestVerificationToken").value) *@
+
+    const serialize_form = form => JSON.stringify(
+        Array.from(new FormData(form).entries())
+            .reduce((m, [key, value]) => Object.assign(m, { [key]: value }), {})
+    );
+
+    $('#register_form').on('submit', function (event) {
+        event.preventDefault();
+        const json = serialize_form(this);
+        console.log(json);
+
+        //var token = document.getElementsByName("csrfToken").value;
+
+
+        var token = $("input[name='__RequestVerificationToken']").val()
+
+        console.log( document.getElementById("__RequestVerificationToken").value)
+
+        @* var token = (document.cookie).split('=')[1] *@
+
+
+        $.ajax({
+          type: 'POST',
+            url: 'https://localhost:7122/Chatbot',
+          dataType: 'json',
+          headers: {
+              'XSRF-TOKEN': token,
+            },
+          data: json,
+          contentType: 'application/json',
+          success: function(data) {
+              console.log(data)
+              console.log(document.cookie)
+          }
+        });
+    });
+
+
+</script>
