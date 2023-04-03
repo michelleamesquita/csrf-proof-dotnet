@@ -1,0 +1,19 @@
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  sast_job:
+    runs-on: ubuntu-latest
+    name: SAST Validator
+    steps:
+      - name: Checkout repository content
+        uses: actions/checkout@v2 
+
+      - name: SAST validator
+        uses: michelleamesquita/sast-validator@v40
+        with:
+          options: -v $PWD/:/app
+          path: .
+          language: c#
